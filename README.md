@@ -56,13 +56,13 @@ If you want to run the application manually instead of using docker-compose, the
 1. Create a new network for the application and the database:
 
   ```bash
-  $ docker network create mediawiki_network
+  $ docker network create mediawiki-tier
   ```
 
 2. Start a MariaDB database in the network generated:
 
   ```bash
-  $ docker run -d --name mariadb --net=mediawiki_network bitnami/mariadb
+  $ docker run -d --name mariadb --net=mediawiki-tier bitnami/mariadb
   ```
 
   *Note:* You need to give the container a name in order to Mediawiki to resolve the host
@@ -70,7 +70,7 @@ If you want to run the application manually instead of using docker-compose, the
 3. Run the Mediawiki container:
 
   ```bash
-  $ docker run -d -p 80:80 --name mediawiki --net=mediawiki_network bitnami/mediawiki
+  $ docker run -d -p 80:80 --name mediawiki --net=mediawiki-tier bitnami/mediawiki
   ```
 
 Then you can access your application at http://your-ip/
@@ -78,7 +78,7 @@ Then you can access your application at http://your-ip/
 ## Persisting your application
 
 
-If you remove every container and volume all your data will be lost, and the next time you run the image the application will be reinitialized. To avoid this loss of data, you should mount a volume that will persist even after the container is removed. 
+If you remove every container and volume all your data will be lost, and the next time you run the image the application will be reinitialized. To avoid this loss of data, you should mount a volume that will persist even after the container is removed.
 
 For persistence of the MediaWiki deployment, the above examples define docker volumes namely `mariadb_data` and `mediawiki_data`. The MediaWiki application state will persist as long as these volumes are not removed.
 
@@ -96,7 +96,7 @@ services:
   mariadb:
     image: 'bitnami/mariadb:latest'
     volumes:
-      - '/path/to/your/local/mariadb_data:/bitnami/mariadb'
+      - /path/to/mariadb-persistence:/bitnami/mariadb
   mediawiki:
     image: 'bitnami/mediawiki:latest'
     depends_on:
@@ -186,7 +186,7 @@ application:
  * For manual execution add a `-e` option with each variable and value:
 
 ```bash
- $ docker run -d -e MEDIAWIKI_PASSWORD=my_password -p 80:80 --name mediawiki -v /your/local/path/bitnami/mediawiki:/bitnami/mediawiki --network=mediawiki_network bitnami/mediawiki
+ $ docker run -d -e MEDIAWIKI_PASSWORD=my_password -p 80:80 --name mediawiki -v /your/local/path/bitnami/mediawiki:/bitnami/mediawiki --network=mediawiki-tier bitnami/mediawiki
 ```
 
 Available variables:
@@ -228,7 +228,7 @@ This would be an example of SMTP configuration using a GMail account:
  * For manual execution:
 
 ```bash
- $ docker run -d -e SMTP_HOST=ssl://smtp.gmail.com -e SMTP_HOST_ID=mydomain.com -e SMTP_PORT=465 -e SMTP_USER=your_email@gmail.com -e SMTP_PASSWORD=your_password -p 80:80 --name mediawiki --net=mediawiki_network bitnami/mediawiki
+ $ docker run -d -e SMTP_HOST=ssl://smtp.gmail.com -e SMTP_HOST_ID=mydomain.com -e SMTP_PORT=465 -e SMTP_USER=your_email@gmail.com -e SMTP_PASSWORD=your_password -p 80:80 --name mediawiki --net=mediawiki-tier bitnami/mediawiki
 ```
 
 # Backing up your application
